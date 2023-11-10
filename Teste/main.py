@@ -4,7 +4,7 @@ pokemon_info = {'Name': [], 'Types': [], 'Generation': [] , 'Attribute': [], 'IV
 
 #function to fetch all pokemons names
 def catch_pokemon_gen(n):
-    url = 'https://pokeapi.co/api/v2/generation/{}'.format(n)
+    url = f'https://pokeapi.co/api/v2/generation/{n}'
     p = requests.get(url)
     info = p.json()
     pokemon_list = []
@@ -19,8 +19,6 @@ gen2 = catch_pokemon_gen(2)
 gen3 = catch_pokemon_gen(3)
 gen4 = catch_pokemon_gen(4)
 
-all_names = [*gen1,*gen2,*gen3,*gen4]
-
 #function to fetch the pokemon type
 def catch_pokemon_type(name):
     url = base_url + 'pokemon/' + name
@@ -29,7 +27,7 @@ def catch_pokemon_type(name):
     types = [type['type']['name'] for type in info['types']]
     return types
 
-#function to fetch pokemon stats
+#function to gather pokemon info on its attributes
 def catch_pokemon_iv(name):
     url = base_url + 'pokemon/' + name
     p = requests.get(url)
@@ -37,7 +35,7 @@ def catch_pokemon_iv(name):
     attributes = ['hp', 'attack', 'defense', 'special-attack', 'special-defense', 'speed']
     highest_attribute = attributes[0]
     highest_attribute_iv = 0
-
+    
     for i in range(len(attributes)):
         iv_value = info['stats'][i]['base_stat']
 
@@ -45,31 +43,40 @@ def catch_pokemon_iv(name):
             highest_attribute_iv = iv_value
             highest_attribute = attributes[i]
 
-    return highest_attribute, highest_attribute_iv 
+    return highest_attribute, highest_attribute_iv
 
 #function for gathering info in a DF
 def catch_all_info(list):
     for pokemon in list:
-        types = catch_pokemon_type(pokemon)
-        attribute, iv = catch_pokemon_iv(pokemon)
-        pokemon_info['Name'].append(pokemon)
-        pokemon_info['Types'].append(types)
-        pokemon_info['Attribute'].append(attribute)
-        pokemon_info['IV'].append(iv)
+        try:
+            types = catch_pokemon_type(pokemon)
+            attribute, iv = catch_pokemon_iv(pokemon)
+            pokemon_info['Name'].append(pokemon)
+            pokemon_info['Types'].append(types)
+            pokemon_info['Attribute'].append(attribute)
+            pokemon_info['IV'].append(iv)
+        except Exception as e:
+            print(f'error on pokemon {pokemon}')
     return pokemon_info
 
 #used this space to gather info per gen since requests took long time
 gen1_info = catch_all_info(gen1)
 gen2_info = catch_all_info(gen2)
+gen3_info = catch_all_info(gen3)
+gen4_info = catch_all_info(gen4)
 
 #generation DataFrame creation
 gen1df = pd.DataFrame(gen1_info)
 gen1df.index += 1
 gen2df = pd.DataFrame(gen2_info)
 gen2df.index += 1
+gen3df = pd.DataFrame(gen3_info)
+gen3df.index += 1
+gen4df = pd.DataFrame(gen4_info)
+gen4df.index += 1
 
 #sum of generations into a single DataFrame
-total = [gen1df, gen2df]
+total = [gen1df, gen2df, gen3df, gen4df]
 totaldf = pd.concat(total)
 totaldf = totaldf.reset_index()
 
