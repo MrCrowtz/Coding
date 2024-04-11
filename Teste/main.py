@@ -2,29 +2,30 @@ import requests, json, pandas as pd, plotly.express as px
 base_url = 'https://pokeapi.co/api/v2/'
 pokemon_info = {'Name': [], 'Types': [], 'Generation': [] , 'Attribute': [], 'IV': []}
 
-#function to fetch all pokemons names
+#function to gather pokemon per gen(made to also get other gens)
 def catch_pokemon_gen(n):
     url = f'https://pokeapi.co/api/v2/generation/{n}'
     p = requests.get(url)
     info = p.json()
-    pokemon_list = []
+    poke_list = []
 
     for pokemon in info['pokemon_species']:
-        pokemon_name = pokemon['name']
-        pokemon_list.append(pokemon_name)
+        name = pokemon['name']
+        poke_list.append(name)
 
-    return pokemon_list
+    return poke_list
+
 gen1 = catch_pokemon_gen(1)
 gen2 = catch_pokemon_gen(2)
 gen3 = catch_pokemon_gen(3)
 gen4 = catch_pokemon_gen(4)
 
-#function to fetch the pokemon type
+#function to gather pokemon types
 def catch_pokemon_type(name):
     url = base_url + 'pokemon/' + name
     p = requests.get(url)
     info = p.json()
-    types = [type['type']['name'] for type in info['types']]
+    types = [type['type']['name'] for type in info['types']]#since a pokemon can have 2 types, we read both and add them in a list
     return types
 
 #function to gather pokemon info on its attributes
