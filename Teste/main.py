@@ -61,20 +61,26 @@ def catch_all_info(list):
     return pokemon_info
 
 #used this space to gather info per gen since requests took long time
+#and creating dataframe per generation
 gen1_info = catch_all_info(gen1)
-gen2_info = catch_all_info(gen2)
-gen3_info = catch_all_info(gen3)
-gen4_info = catch_all_info(gen4)
-
-#generation DataFrame creation
 gen1df = pd.DataFrame(gen1_info)
 gen1df.index += 1
+pokemon_info = {'Name': [], 'Types': [], 'Attribute': [], 'IV': [],}
+
+gen2_info = catch_all_info(gen2)
 gen2df = pd.DataFrame(gen2_info)
 gen2df.index += 1
+pokemon_info = {'Name': [], 'Types': [], 'Attribute': [], 'IV': [],}
+
+gen3_info = catch_all_info(gen3)
 gen3df = pd.DataFrame(gen3_info)
 gen3df.index += 1
+pokemon_info = {'Name': [], 'Types': [], 'Attribute': [], 'IV': [],}
+
+gen4_info = catch_all_info(gen4)
 gen4df = pd.DataFrame(gen4_info)
 gen4df.index += 1
+pokemon_info = {'Name': [], 'Types': [], 'Attribute': [], 'IV': [],}
 
 #sum of generations into a single DataFrame
 total = [gen1df, gen2df, gen3df, gen4df]
